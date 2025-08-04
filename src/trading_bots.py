@@ -33,7 +33,8 @@ def bot_b_simple_momentum(prices):
 
 def bot_a_smart_ml(prices, window_size=10, train_ratio=0.7, latency_ticks=100):
     position = 0  #Track the number of units currently held
-    cash = 0      #Total profit/loss from trades
+    cash = 0  #Total profit/loss from trades
+    trades = []  #List to store trade details for analysis
 
     #Build features (sliding windows of past prices) and labels (future direction)
     X = []  #Features: window of past prices
@@ -41,7 +42,7 @@ def bot_a_smart_ml(prices, window_size=10, train_ratio=0.7, latency_ticks=100):
 
     for i in range(window_size, len(prices) - 1):
         window = prices[i - window_size:i]  #Get the last `window_size` prices
-        direction = 1 if prices[i + 1] > prices[i] else 0  #Predict up or down 
+        direction = 1 if prices[i + 1] > prices[i] else 0  #Predict up or down
         X.append(window)
         y.append(direction)
 
@@ -51,7 +52,7 @@ def bot_a_smart_ml(prices, window_size=10, train_ratio=0.7, latency_ticks=100):
     #Split into training and testing datasets
     split_idx = int(len(X) * train_ratio)  #index where training ends and testing begins
     X_train, y_train = X[:split_idx], y[:split_idx]  #Training data
-    X_test, y_test = X[split_idx:], y[split_idx:]    #Testing data
+    X_test, y_test = X[split_idx:], y[split_idx:]  #Testing data
     test_start = split_idx + window_size  #Map test data back to original price index
 
     #Train logistic regression model on historical price windows
@@ -63,26 +64,34 @@ def bot_a_smart_ml(prices, window_size=10, train_ratio=0.7, latency_ticks=100):
     while i < len(X_test) - latency_ticks:
         prediction = model.predict([X_test[i]])[0]  #Predict next move (1 = up, 0 = down)
 
-        delayed_index = test_start + i + latency_ticks  #Index where the trade is actually executed
-        exec_price = prices[delayed_index]              #Use future price due to processing delay
+        delayed_index = test_start + i + latency_ticks  #Index where trade is actually executed
+        exec_price = prices[delayed_index]  #Price at execution time
 
         if prediction == 1:
-            #If model predicts price will rise, we buy one unit
-            cash -= exec_price
+            cash -= exec_price  #Buy one unit
             position += 1
         else:
-            #If model predicts price will fall, we sell one unit 
-            cash += exec_price
+            cash += exec_price  #Sell one unit
             position -= 1
 
-        i += 1  #Move to the next  example
+        #Log trade details for analysis
+        trades.append({
+            'timestamp_index': delayed_index,
+            'predicted_direction': prediction,
+            'predict_price': prices[test_start + i],
+            'exec_price': exec_price,
+            'position': position,
+        })
 
-    #Exit remaining position at the most recent price
+        i += 1  #Move to next example
+
+    #Exit remaining position at most recent price
     if test_start + i < len(prices):
         final_price = prices[test_start + i]
         cash += position * final_price  #Close any open long/short positions
 
-    return cash  #Return final PnL (Profit and Loss)
+    return cash, trades  #Return final PnL and trade log
+
 
 
 #test the bot on  data files
@@ -100,5 +109,7 @@ if __name__ == "__main__":
 
     #Run Bot A on the same data and show result 
     result_a = bot_a_smart_ml(prices, latency_ticks=100)
-    print(f"Bot A (Realistic ML) final cash: {result_a:.2f}")
+    print(f"Bot A (Realistic ML) final cash: {result_a[0]:.2f}")
+
+
 
