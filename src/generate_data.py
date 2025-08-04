@@ -7,7 +7,7 @@ data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')
 os.makedirs('../data', exist_ok=True)
 
 def generate_synthetic_tick_data(num_ticks=10000, start_price=100):
-    np.random.seed(42)  #So random number generation starts at the same number each time, leading to the same sequence
+    np.random.seed(90)  #So random number generation starts at the same number each time, leading to the same sequence
     
     price_changes = np.random.normal(loc=0, scale=0.1, size=num_ticks) 
     #Price changes are based on a normal distribution with small step size

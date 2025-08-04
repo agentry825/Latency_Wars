@@ -56,7 +56,7 @@ def bot_a_smart_ml(prices, window_size=10, train_ratio=0.7, latency_ticks=100):
     test_start = split_idx + window_size  #Map test data back to original price index
 
     #Train logistic regression model on historical price windows
-    model = LogisticRegression()
+    model = LogisticRegression(max_iter=500)
     model.fit(X_train, y_train)
 
     #Simulate trading with latency
