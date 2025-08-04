@@ -70,3 +70,8 @@ This simulation framework may be used in:
 - Research exploring the interaction of model accuracy and market latency.
 - Benchmarking latency-optimised infrastructure or decision engines.
 - Comparative studies of model-based vs. rule-based algorithmic agents under real-world constraints.
+
+## Results
+<img width="2457" height="1452" alt="image" src="https://github.com/user-attachments/assets/10f1fd77-55da-4190-9956-f12e8d249722" />
+
+This shows that increasing latency decreases performance of a smart algorithm to that of worse than a fast but dumb algorithm when latency is greater than 852 ticks.
