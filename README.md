@@ -59,7 +59,7 @@ Latency_Wars/
 ├── interface.py                    # Callable module for external frontends
 ├── bot_a_trades_latency_100.csv   # Example output (trade log at 100-tick latency)
 └── README.md                       # Project overview and documentation
-
+```text
 
 ## Applications
 
