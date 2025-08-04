@@ -49,15 +49,16 @@ The simulation operates on synthetic financial tick data. Each tick represents a
 
 ## Code Structure
 
+```text
 Latency_Wars/
 ├── data/
-│ └── synthetic_ticks.csv #Time-series price information
+│   └── synthetic_ticks.csv         # Time-series price data for simulation
 ├── src/
-│ ├── trading_bots.py #Implementation of Bot A (ML) and Bot B (momentum)
-  ├── generate_data.py #Generates synthetic tick data
-│ └── evaluate.py #Evaluation logic for running bots and comparing results
-├── interface.py #Callable module for external integrations (e.g., GUI or API)
-└── README.md # Project documentation
+│   ├── trading_bots.py             # Definitions of Bot A and Bot B
+│   └── evaluate.py                 # Evaluation and comparison of strategies
+├── interface.py                    # Callable module for external frontends
+├── bot_a_trades_latency_100.csv   # Example output (trade log at 100-tick latency)
+└── README.md                       # Project overview and documentation
 
 
 ## Applications
